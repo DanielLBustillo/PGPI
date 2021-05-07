@@ -1,11 +1,9 @@
 package com.example.application.views.Users;
 
-import java.util.ArrayList;
-import java.util.Optional;
-
 import com.example.application.data.entity.Appuser;
 import com.example.application.data.entity.Appusers;
 import com.example.application.views.MainAdmin.MainViewAdmin;
+import com.example.application.views.login.LoginView;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.HasStyle;
@@ -18,26 +16,30 @@ import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.splitlayout.SplitLayout;
-import com.vaadin.flow.data.binder.BeanValidationBinder;
-import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.vaadin.artur.helpers.CrudServiceDataProvider;
+
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.component.dependency.CssImport;
-import com.vaadin.flow.data.renderer.TemplateRenderer;
 import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.component.datepicker.DatePicker;
-import com.vaadin.flow.component.checkbox.Checkbox;
 
 @Route(value = "Appusers", layout = MainViewAdmin.class)
 @PageTitle("UsersView")
 @CssImport("./views/orders/orders-view.css")
-public class UsersView extends Div  {
+
+public class UsersView extends Div implements BeforeEnterObserver {
+    @Override
+    public void beforeEnter(BeforeEnterEvent event) {
+    	try {
+        	if(!VaadinSession.getCurrent().getAttribute("role").toString().equals("ADMIN"))
+        		event.rerouteTo(LoginView.class);
+    	}catch(Exception ex) {
+    		event.rerouteTo(LoginView.class);
+    	}
+        }
 
 	private Appusers appusers= new Appusers();
     private Grid<Appuser> grid = new Grid<>(Appuser.class);
@@ -55,9 +57,8 @@ public class UsersView extends Div  {
 
 
 
-    public UsersView() throws ValidationException {
-    	if(!VaadinSession.getCurrent().getAttribute("role").toString().equals("ADMIN"))
-			UI.getCurrent().navigate("login-view");
+    public UsersView() {
+    	
         addClassName("user-view");
         // Create UI
         SplitLayout splitLayout = new SplitLayout();
