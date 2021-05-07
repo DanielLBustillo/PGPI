@@ -1,4 +1,4 @@
-package com.example.application.views.main;
+package com.example.application.views.admin;
 
 import java.util.Optional;
 
@@ -20,14 +20,11 @@ import com.vaadin.flow.server.PWA;
 import com.vaadin.flow.theme.Theme;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.PageTitle;
-import com.example.application.views.main.MainView;
+import com.example.application.views.admin.MainViewAdmin;
 import com.example.application.views.login.LoginView;
 import com.example.application.views.shop.ShopView;
-import com.example.application.views.product.ProductView;
+import com.example.application.views.pickinglist.GeneratepikingView;
 import com.example.application.views.pickinglist.PickinglistView;
-import com.example.application.views.orders.OrdersView;
-import com.example.application.views.admin.AdminView;
-import com.example.application.views.generatepiking.GeneratepikingView;
 import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.theme.lumo.Lumo;
 import com.vaadin.flow.component.dependency.CssImport;
@@ -39,12 +36,12 @@ import com.vaadin.flow.component.dependency.CssImport;
 @JsModule("./styles/shared-styles.js")
 @Theme(value = Lumo.class, variant = Lumo.DARK)
 @CssImport("./views/main/main-view.css")
-public class MainView extends AppLayout {
+public class MainViewAdmin extends AppLayout {
 
     private final Tabs menu;
     private H1 viewTitle;
 
-    public MainView() {
+    public MainViewAdmin() {
         setPrimarySection(Section.DRAWER);
         addToNavbar(true, createHeaderContent());
         menu = createMenu();
@@ -92,8 +89,6 @@ public class MainView extends AppLayout {
 
     private Component[] createMenuItems() {
         return new Tab[]{createTab("Login", LoginView.class), createTab("Shop", ShopView.class),
-                createTab("Product", ProductView.class), createTab("Picking-list", PickinglistView.class),
-                createTab("Orders", OrdersView.class), createTab("Admin", AdminView.class),
                 createTab("Generate piking", GeneratepikingView.class)};
     }
 

@@ -15,10 +15,10 @@ import com.vaadin.flow.router.AfterNavigationEvent;
 import com.vaadin.flow.router.AfterNavigationObserver;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.PageTitle;
-import com.example.application.views.main.MainView;
+import com.example.application.views.admin.MainViewAdmin;
 import com.vaadin.flow.component.dependency.CssImport;
 
-@Route(value = "Shop", layout = MainView.class)
+@Route(value = "Shop", layout = MainViewShop.class)
 @PageTitle("Shop")
 @CssImport("./views/shop/shop-view.css")
 public class ShopView extends Div implements AfterNavigationObserver {

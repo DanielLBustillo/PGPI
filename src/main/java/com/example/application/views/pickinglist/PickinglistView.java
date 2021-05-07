@@ -15,10 +15,10 @@ import com.vaadin.flow.router.AfterNavigationEvent;
 import com.vaadin.flow.router.AfterNavigationObserver;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.PageTitle;
-import com.example.application.views.main.MainView;
+import com.example.application.views.admin.MainViewAdmin;
 import com.vaadin.flow.component.dependency.CssImport;
 
-@Route(value = "Picking-list", layout = MainView.class)
+@Route(value = "Picking-list", layout = MainViewAdmin.class)
 @PageTitle("Picking-list")
 @CssImport("./views/pickinglist/pickinglist-view.css")
 public class PickinglistView extends Div implements AfterNavigationObserver {
