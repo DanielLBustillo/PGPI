@@ -1,11 +1,11 @@
-package com.example.application.views.admin;
+package com.example.application.views.Users;
 
 import java.util.ArrayList;
 import java.util.Optional;
 
 import com.example.application.data.entity.Appuser;
 import com.example.application.data.entity.Appusers;
-
+import com.example.application.views.MainAdmin.MainViewAdmin;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.HasStyle;
@@ -34,9 +34,9 @@ import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.checkbox.Checkbox;
 
 @Route(value = "Appusers", layout = MainViewAdmin.class)
-@PageTitle("Appusers")
+@PageTitle("UsersView")
 @CssImport("./views/orders/orders-view.css")
-public class OrdesView extends Div implements BeforeEnterObserver {
+public class UsersView extends Div  {
 
 	private Appusers appusers= new Appusers();
     private Grid<Appuser> grid = new Grid<>(Appuser.class);
@@ -54,7 +54,7 @@ public class OrdesView extends Div implements BeforeEnterObserver {
 
 
 
-    public OrdesView() throws ValidationException {
+    public UsersView() throws ValidationException {
         addClassName("user-view");
         // Create UI
         SplitLayout splitLayout = new SplitLayout();
@@ -66,21 +66,18 @@ public class OrdesView extends Div implements BeforeEnterObserver {
         add(splitLayout);
 
         // Configure Grid
-        TemplateRenderer<Appuser> importantRenderer = TemplateRenderer.<Appuser>of(
-                "<iron-icon hidden='[[!item.important]]' icon='vaadin:check' style='width: var(--lumo-icon-size-s); height: var(--lumo-icon-size-s); color: var(--lumo-primary-text-color);'></iron-icon><iron-icon hidden='[[item.important]]' icon='vaadin:minus' style='width: var(--lumo-icon-size-s); height: var(--lumo-icon-size-s); color: var(--lumo-disabled-text-color);'></iron-icon>");
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
         grid.setHeightFull();
 
 		refreshGrid();
 
         // when a row is selected or deselected, populate form
-        grid.asSingleSelect().addValueChangeListener(event -> {
-            if (event.getValue() != null) {
-                UI.getCurrent().navigate(String.format("Orders/%d/edit", event.getValue().getId()));
-                populateForm(event.getValue());
+        grid.addSelectionListener(event -> {
+            if (event.getFirstSelectedItem().get() != null) {
+                populateForm(event.getFirstSelectedItem().get());
             } else {
                 clearForm();
-                UI.getCurrent().navigate(OrdesView.class);
+                UI.getCurrent().navigate(UsersView.class);
             }
         });
         cancel.addClickListener(e -> {
@@ -96,26 +93,12 @@ public class OrdesView extends Div implements BeforeEnterObserver {
 			clearForm();
 			refreshGrid();
 			Notification.show("Appuser details stored.");
-			UI.getCurrent().navigate(OrdesView.class);
+			UI.getCurrent().navigate(UsersView.class);
         });
 
     }
 
-    @Override
-    public void beforeEnter(BeforeEnterEvent event) {
-        if (true) {
-            
-	    } else {
-	        Notification.show(
-	                String.format("The requested Appuser was not found, ID = %d", this.appuser.getId()), 3000,
-	                Notification.Position.BOTTOM_START);
-	        // when a row is selected but the data is no longer available,
-	        // refresh grid
-	        refreshGrid();
-	        event.forwardTo(OrdesView.class);
-	    }
-    }
-    
+   
 
     private void refreshGrid() {
 		this.grid.setItems(this.appusers.getPersonList());
@@ -167,7 +150,9 @@ public class OrdesView extends Div implements BeforeEnterObserver {
     }
 
     private void clearForm() {
-    	
+        this.Name.setValue("");
+        this.Role.setValue("");
+        this.Userinfo.setValue("");
     }
 
     private void populateForm(Appuser appuser) {

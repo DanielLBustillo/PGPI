@@ -1,4 +1,4 @@
-package com.example.application.views.pickinglist;
+package com.example.application.views.PikingList;
 
 import java.util.Arrays;
 import java.util.List;
@@ -15,7 +15,8 @@ import com.vaadin.flow.router.AfterNavigationEvent;
 import com.vaadin.flow.router.AfterNavigationObserver;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.PageTitle;
-import com.example.application.views.admin.MainViewAdmin;
+import com.example.application.views.Generatepiking.Person;
+import com.example.application.views.MainAdmin.MainViewAdmin;
 import com.vaadin.flow.component.dependency.CssImport;
 
 @Route(value = "Picking-list", layout = MainViewAdmin.class)

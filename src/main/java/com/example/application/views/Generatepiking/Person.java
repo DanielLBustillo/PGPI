@@ -1,4 +1,4 @@
-package com.example.application.views.pickinglist;
+package com.example.application.views.Generatepiking;
 
 public class Person {
 

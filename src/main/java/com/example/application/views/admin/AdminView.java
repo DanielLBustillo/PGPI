@@ -1,5 +1,6 @@
 package com.example.application.views.admin;
 
+import com.example.application.views.MainAdmin.MainViewAdmin;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.router.Route;

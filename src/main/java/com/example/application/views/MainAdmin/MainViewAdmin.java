@@ -1,4 +1,4 @@
-package com.example.application.views.pickinglist;
+package com.example.application.views.MainAdmin;
 
 import java.util.Optional;
 
@@ -20,11 +20,11 @@ import com.vaadin.flow.server.PWA;
 import com.vaadin.flow.theme.Theme;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.PageTitle;
-import com.example.application.views.admin.MainViewAdmin;
+import com.example.application.views.Generatepiking.GeneratepikingView;
+import com.example.application.views.MainAdmin.MainViewAdmin;
+import com.example.application.views.PikingList.PickinglistView;
 import com.example.application.views.login.LoginView;
 import com.example.application.views.shop.ShopView;
-import com.example.application.views.pickinglist.GeneratepikingView;
-import com.example.application.views.pickinglist.PickinglistView;
 import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.theme.lumo.Lumo;
 import com.vaadin.flow.component.dependency.CssImport;
@@ -32,16 +32,16 @@ import com.vaadin.flow.component.dependency.CssImport;
 /**
  * The main view is a top-level placeholder for other views.
  */
-@PWA(name = "My App", shortName = "My App", enableInstallPrompt = false)
+
 @JsModule("./styles/shared-styles.js")
 @Theme(value = Lumo.class, variant = Lumo.DARK)
 @CssImport("./views/main/main-view.css")
-public class MainViewPiking extends AppLayout {
+public class MainViewAdmin extends AppLayout {
 
     private final Tabs menu;
     private H1 viewTitle;
 
-    public MainViewPiking() {
+    public MainViewAdmin() {
         setPrimarySection(Section.DRAWER);
         addToNavbar(true, createHeaderContent());
         menu = createMenu();

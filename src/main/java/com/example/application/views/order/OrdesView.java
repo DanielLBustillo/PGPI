@@ -1,11 +1,11 @@
-package com.example.application.views.admin;
+package com.example.application.views.order;
 
 import java.util.ArrayList;
 import java.util.Optional;
 
 import com.example.application.data.entity.Appuser;
 import com.example.application.data.entity.Appusers;
-
+import com.example.application.views.MainAdmin.MainViewAdmin;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.HasStyle;
@@ -33,10 +33,10 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.checkbox.Checkbox;
 
-@Route(value = "Appusers", layout = MainViewAdmin.class)
+@Route(value = "Orders", layout = MainViewAdmin.class)
 @PageTitle("Appusers")
 @CssImport("./views/orders/orders-view.css")
-public class UsersView extends Div implements BeforeEnterObserver {
+public class OrdesView extends Div implements BeforeEnterObserver {
 
 	private Appusers appusers= new Appusers();
     private Grid<Appuser> grid = new Grid<>(Appuser.class);
@@ -54,7 +54,7 @@ public class UsersView extends Div implements BeforeEnterObserver {
 
 
 
-    public UsersView() throws ValidationException {
+    public OrdesView() throws ValidationException {
         addClassName("user-view");
         // Create UI
         SplitLayout splitLayout = new SplitLayout();
@@ -80,7 +80,7 @@ public class UsersView extends Div implements BeforeEnterObserver {
                 populateForm(event.getValue());
             } else {
                 clearForm();
-                UI.getCurrent().navigate(UsersView.class);
+                UI.getCurrent().navigate(OrdesView.class);
             }
         });
         cancel.addClickListener(e -> {
@@ -96,7 +96,7 @@ public class UsersView extends Div implements BeforeEnterObserver {
 			clearForm();
 			refreshGrid();
 			Notification.show("Appuser details stored.");
-			UI.getCurrent().navigate(UsersView.class);
+			UI.getCurrent().navigate(OrdesView.class);
         });
 
     }
@@ -112,7 +112,7 @@ public class UsersView extends Div implements BeforeEnterObserver {
 	        // when a row is selected but the data is no longer available,
 	        // refresh grid
 	        refreshGrid();
-	        event.forwardTo(UsersView.class);
+	        event.forwardTo(OrdesView.class);
 	    }
     }
     

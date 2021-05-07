@@ -15,7 +15,8 @@ import com.vaadin.flow.router.AfterNavigationEvent;
 import com.vaadin.flow.router.AfterNavigationObserver;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.PageTitle;
-import com.example.application.views.admin.MainViewAdmin;
+import com.example.application.views.MainAdmin.MainViewAdmin;
+import com.example.application.views.Mainshop.MainViewShop;
 import com.vaadin.flow.component.dependency.CssImport;
 
 @Route(value = "Shop", layout = MainViewShop.class)

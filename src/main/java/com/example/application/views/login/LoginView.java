@@ -1,14 +1,17 @@
 package com.example.application.views.login;
 
-import com.example.application.views.admin.MainViewAdmin;
+import com.example.application.views.MainAdmin.MainViewAdmin;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.RouteAlias;
 import com.vaadin.flow.component.dependency.CssImport;
+import com.vaadin.flow.component.html.Div;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -22,41 +25,68 @@ import java.util.logging.Logger;
 @Route(value = "Login")
 @RouteAlias(value = "")
 @PageTitle("Login")
-@CssImport("./views/login/login-view.css")
-public class LoginView extends HorizontalLayout {
+public class LoginView extends VerticalLayout {
 
     /**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 	private TextField name;
+	private TextField pass;
     private Button sayHello;
      
     String url = "jdbc:postgresql://localhost:5432/PGPI";
     String user = "postgres";
     String password = "5766";
+    
+
+    String role = "";
 
     public LoginView() {
         addClassName("login-view");
+        
         name = new TextField("Your name");
-        sayHello = new Button("Say hello");
-        add(name, sayHello);
-        setVerticalComponentAlignment(Alignment.END, name, sayHello);
+        pass = new TextField("Your password");
+        sayHello = new Button("login");
+        add(name, pass, sayHello);
+        
+        setAlignItems(Alignment.CENTER);
+        setJustifyContentMode(JustifyContentMode.CENTER);
+        
         sayHello.addClickListener(e -> {
 			try {
 	            PreparedStatement pst;
 	        	Connection con = DriverManager.getConnection(url, user, password);
-				pst = con.prepareStatement("SELECT * from \"DDBB\".appuser");
+				pst = con.prepareStatement("select a.\"Role\" from \"DDBB\".appuser a where a.\"iduser\"  = '"+name.getValue()+"' and a.\"Password\" = '"+pass.getValue()+"'");
 	            ResultSet rs = pst.executeQuery();
-
 		        while (rs.next()) {
 		        
-		        	Notification.show(rs.getString(1));
+		        	role = rs.getString(1);
+					Notification.show(role);
+		        }
+		        if (role.equals("ROL")) {
+	        		UI.getCurrent().navigate("Picking-list");
+		        }
+		        
+		        if (role.equals("ROL")) {
+		        	UI.getCurrent().navigate("shop-view");	        
+		        }
+	        	if (role.equals("ROL")) {	
+	        		UI.getCurrent().navigate("Appusers");
+		        }
+	        	
+		        
+		        if (role == "") {
+					Notification.show("CREDENCIALES INCORRECTOS");
 		        }
 			} catch (SQLException e1) {
-				e1.printStackTrace();
 				Notification.show(e1.getMessage());
 			}
         });
     }
+
+	private void setVerticalComponentAlignment(Alignment end, TextField name2, Button sayHello2) {
+		// TODO Auto-generated method stub
+		
+	}
 }
