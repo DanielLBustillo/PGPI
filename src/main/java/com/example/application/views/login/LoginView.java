@@ -10,6 +10,7 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.RouteAlias;
+import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.html.Div;
 
@@ -62,22 +63,24 @@ public class LoginView extends VerticalLayout {
 		        while (rs.next()) {
 		        
 		        	role = rs.getString(1);
-					Notification.show(role);
 		        }
-		        if (role.equals("ROL")) {
-	        		UI.getCurrent().navigate("Picking-list");
-		        }
-		        
-		        if (role.equals("ROL")) {
-		        	UI.getCurrent().navigate("shop-view");	        
-		        }
-	        	if (role.equals("ROL")) {	
-	        		UI.getCurrent().navigate("Appusers");
-		        }
-	        	
 		        
 		        if (role == "") {
 					Notification.show("CREDENCIALES INCORRECTOS");
+		        }else {
+		        	VaadinSession.getCurrent().setAttribute("user", name.getValue());
+		        	VaadinSession.getCurrent().setAttribute("role", role);
+		        	
+		        	if (role.equals("ROL")) {
+		        		UI.getCurrent().navigate("Picking-list");
+			        }
+			        
+			        if (role.equals("ROL")) {
+			        	UI.getCurrent().navigate("shop-view");	        
+			        }
+		        	if (role.equals("ADMIN")) {	
+		        		UI.getCurrent().navigate("Appusers");
+			        }
 		        }
 			} catch (SQLException e1) {
 				Notification.show(e1.getMessage());

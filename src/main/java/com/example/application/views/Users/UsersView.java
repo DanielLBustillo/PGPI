@@ -26,6 +26,7 @@ import com.vaadin.flow.router.BeforeEnterObserver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.vaadin.artur.helpers.CrudServiceDataProvider;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.data.renderer.TemplateRenderer;
@@ -44,7 +45,7 @@ public class UsersView extends Div  {
 	private Appuser appuser;
     
 
-    private TextField Name;
+    private TextField Name;  
     private TextField Password;
     private TextField Role;
     private TextField Userinfo;
@@ -55,6 +56,8 @@ public class UsersView extends Div  {
 
 
     public UsersView() throws ValidationException {
+    	if(!VaadinSession.getCurrent().getAttribute("role").toString().equals("ADMIN"))
+			UI.getCurrent().navigate("login-view");
         addClassName("user-view");
         // Create UI
         SplitLayout splitLayout = new SplitLayout();
