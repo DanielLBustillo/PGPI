@@ -55,16 +55,9 @@ public class LoginView extends VerticalLayout {
         setJustifyContentMode(JustifyContentMode.CENTER);
         
         sayHello.addClickListener(e -> {
+
 			try {
-	            PreparedStatement pst;
-	        	Connection con = DriverManager.getConnection(url, user, password);
-				pst = con.prepareStatement("select a.\"Role\" from \"DDBB\".appuser a where a.\"iduser\"  = '"+name.getValue()+"' and a.\"Password\" = '"+pass.getValue()+"'");
-	            ResultSet rs = pst.executeQuery();
-		        while (rs.next()) {
-		        
-		        	role = rs.getString(1);
-		        }
-		        
+		        role =  check_login(name.getValue(), pass.getValue());
 		        if (role == "") {
 					Notification.show("CREDENCIALES INCORRECTOS");
 		        }else {
@@ -87,9 +80,16 @@ public class LoginView extends VerticalLayout {
 			}
         });
     }
-
-	private void setVerticalComponentAlignment(Alignment end, TextField name2, Button sayHello2) {
-		// TODO Auto-generated method stub
-		
-	}
+    public String check_login( String n, String p) throws SQLException {
+    	String rol ="";
+    	PreparedStatement pst;
+    	Connection con = DriverManager.getConnection(url, user, password);
+		pst = con.prepareStatement("select a.\"Role\" from \"DDBB\".appuser a where a.\"iduser\"  = '"+ n +"' and a.\"Password\" = '"+ p +"'");
+        ResultSet rs = pst.executeQuery();
+        while (rs.next()) {
+        
+        	rol = rs.getString(1);
+        }
+        return rol;
+    }
 }
