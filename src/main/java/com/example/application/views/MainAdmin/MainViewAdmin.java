@@ -16,18 +16,17 @@ import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.component.tabs.TabsVariant;
 import com.vaadin.flow.router.RouterLink;
-import com.vaadin.flow.server.PWA;
 import com.vaadin.flow.theme.Theme;
-import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.PageTitle;
-import com.example.application.views.Generatepiking.GeneratepikingView;
 import com.example.application.views.MainAdmin.MainViewAdmin;
-import com.example.application.views.PikingList.PickinglistView;
-import com.example.application.views.login.LoginView;
-import com.example.application.views.shop.ShopView;
+import com.example.application.views.admin.ClientesView;
+import com.example.application.views.admin.ProductosView;
+import com.example.application.views.admin.EnviosView;
+import com.example.application.views.admin.PedidosView;
+import com.example.application.views.admin.ProveedoresView;
 import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.theme.lumo.Lumo;
-import com.vaadin.flow.component.dependency.CssImport;
+import com.vaadin.flow.component.dependency.CssImport; 
 
 /**
  * The main view is a top-level placeholder for other views.
@@ -88,8 +87,9 @@ public class MainViewAdmin extends AppLayout {
     }
 
     private Component[] createMenuItems() {
-        return new Tab[]{createTab("Login", LoginView.class), createTab("Shop", ShopView.class),
-                createTab("Generate piking", GeneratepikingView.class)};
+    	return new Tab[]{createTab("Productos", ProductosView.class), createTab("Clientes", ClientesView.class),
+                createTab("Pedidos", PedidosView.class), createTab("Envios", EnviosView.class),
+                createTab("Proveedores", ProveedoresView.class)};
     }
 
     private static Tab createTab(String text, Class<? extends Component> navigationTarget) {
