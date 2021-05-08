@@ -13,10 +13,12 @@ import com.vaadin.flow.component.splitlayout.SplitLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.router.Route;
-
+import com.vaadin.flow.server.VaadinSession;
 import com.example.application.views.MainAdmin.MainViewAdmin;
+import com.example.application.views.login.LoginView;
 import com.example.application.data.entity.Pedido;
-
+import com.vaadin.flow.router.BeforeEnterEvent;
+import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.PageTitle;
 
 import java.sql.PreparedStatement;
@@ -41,7 +43,16 @@ import com.vaadin.flow.component.grid.GridVariant;
 @Route(value = "pedidos", layout = MainViewAdmin.class)
 @PageTitle("Pedidos")
 @CssImport("./views/pedidos/pedidos-view.css")
-public class PedidosView extends Div {
+public class PedidosView extends Div implements BeforeEnterObserver {
+    @Override
+    public void beforeEnter(BeforeEnterEvent event) {
+    	try {
+        	if(!VaadinSession.getCurrent().getAttribute("role").toString().equals("ADMIN"))
+        		event.rerouteTo(LoginView.class);
+    	}catch(Exception ex) {
+    		event.rerouteTo(LoginView.class);
+    	}
+        }
 	
 	private TextField idIncoming;
 	private TextField providerCif;

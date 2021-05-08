@@ -9,8 +9,13 @@ import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.splitlayout.SplitLayout;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.component.upload.Upload;
+import com.vaadin.flow.component.upload.receivers.MemoryBuffer;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.server.VaadinSession;
+import com.vaadin.flow.router.BeforeEnterEvent;
+import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.PageTitle;
 
 import java.io.File;
@@ -24,11 +29,18 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.UUID;
+
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import com.example.application.views.MainAdmin.MainViewAdmin;
+import com.example.application.views.login.LoginView;
 import com.example.application.data.entity.Producto;
 
 import com.vaadin.flow.component.dependency.CssImport;
@@ -43,7 +55,16 @@ import com.vaadin.flow.component.grid.GridVariant;
 
 
 
-public class ProductosView extends Div {
+public class ProductosView extends Div implements BeforeEnterObserver {
+    @Override
+    public void beforeEnter(BeforeEnterEvent event) {
+    	try {
+        	if(!VaadinSession.getCurrent().getAttribute("role").toString().equals("ADMIN"))
+        		event.rerouteTo(LoginView.class);
+    	}catch(Exception ex) {
+    		event.rerouteTo(LoginView.class);
+    	}
+        }
 	
 	
 	private TextField idProduct;
@@ -58,11 +79,13 @@ public class ProductosView extends Div {
 	private Button cancel = new Button("Cancel");
 	private Button save = new Button("Save");
 	private Button delete = new Button("Delete");
-	private Button read = new Button("Leer Terminales");
+	MemoryBuffer buffer = new MemoryBuffer();
+	Upload upload = new Upload(buffer);
 	
 	String url = "jdbc:postgresql://localhost:5432/postgres";
     String user = "postgres";
     String pass = "pgpi";
+    public static final String SAMPLE_XLSX_FILE_PATH = "Ejemplo_Proov_Ref_2021.xlsx";
 	
 	Grid<Producto> grid = new Grid<>();
 	List<Producto> productos = new ArrayList<>();
@@ -168,47 +191,77 @@ public class ProductosView extends Div {
         	grid.getDataProvider().refreshAll();
         });
         
-        read.addClickListener(e -> {
-        	
-        	        	
-        	try  
-        	{  
-        	File file = new File("Ejemplo_Proov_Ref_2021.xlsx");   //creating a new file instance  
-        	FileInputStream fis = new FileInputStream(file);   //obtaining bytes from the file  
-        	//creating Workbook instance that refers to .xlsx file 
-        	
-        	XSSFWorkbook wb = new XSSFWorkbook(fis);  
-        	
-        	XSSFSheet sheet = wb.getSheetAt(0);     //creating a Sheet object to retrieve object  
-        	Iterator<Row> itr = sheet.iterator();    //iterating over excel file  
-        	while (itr.hasNext())                 
-        	{  
-        	Row row = itr.next();  
-        	Iterator<Cell> cellIterator = row.cellIterator();   //iterating over each column  
-        	while (cellIterator.hasNext())   
-        	{  
-        	Cell cell = cellIterator.next();  
-        	switch (cell.getCellType())               
-        	{  
-        	case Cell.CELL_TYPE_STRING:    //field that represents string cell type  
-        	System.out.print(cell.getStringCellValue() + "\t\t\t");  
-        	break;  
-        	case Cell.CELL_TYPE_NUMERIC:    //field that represents number cell type  
-        	System.out.print(cell.getNumericCellValue() + "\t\t\t");  
-        	break;  
-        	default:  
-        	}  
-        	}  
-        	System.out.println("");  
-        	}  
-        	}  
-        	catch(Exception ex)  
-        	{  
-        	ex.printStackTrace();  
-        	}  
+        upload.addSucceededListener(event -> {
+    		Notification.show("done");
+    		Workbook workbook;
+    		File excel =new File(event.getFileName());
+    		String nameProv=null;
+    		String nameProd=null;
+    		int min=0;
+			try {
+				workbook = WorkbookFactory.create(buffer.getInputStream());
+	    		//Notification.show("got here");
+	
+	            // Getting the Sheet at index zero
+	            Sheet sheet = workbook.getSheetAt(0);
 
-        	
-        });
+	            // Create a DataFormatter to format and get each cell's value as String
+	            DataFormatter dataFormatter = new DataFormatter();        // 1. You can obtain a rowIterator and columnIterator and iterate over them
+	            System.out.println("\n\nIterating over Rows and Columns using Iterator\n");
+	            Iterator<Row> rowIterator = sheet.rowIterator();
+	            int aux2=0;
+	            while (rowIterator.hasNext()) {
+	                Row row = rowIterator.next();
+
+	                // Now let's iterate over the columns of the current row
+	                Iterator<Cell> cellIterator = row.cellIterator();
+	                int aux =0;
+	                if(aux2!=0) {
+	                while (cellIterator.hasNext()) {
+	                    Cell cell = cellIterator.next();
+	                    String cellValue = dataFormatter.formatCellValue(cell);
+	                    if(aux==0) {
+	                    	try {
+    	                    	PreparedStatement pst;
+    	                     	Connection con = DriverManager.getConnection(url, user, pass);
+    	             			pst = con.prepareStatement("SELECT * from \"NEWDDBB1\".provider");
+    	                         ResultSet rs = pst.executeQuery();
+    	                         
+    	             	        while (rs.next()) {
+    	             	        	
+    	             	        	
+    	             	        	if(cellValue.equals(rs.getString(2)))
+    	             	        		nameProv = rs.getString(1);
+    	             	        	
+    	             	        }
+    	                    	}catch (SQLException e1) {
+    	             			e1.printStackTrace();
+    	             			Notification.show(e1.getMessage());
+    	             		}
+	                    }
+	                    if(aux==1) {
+	                    	
+	                    	nameProd = cellValue;
+	                    	
+	                    }
+	                    if(aux==2) {
+	                    	min = Integer.parseInt(cellValue);
+	                    }
+	                    //this.add(new TextField(cellValue));
+	                    aux++;
+	                }
+	                Producto p = new Producto (UUID.randomUUID().toString(),nameProd,0,min,0,"",nameProv);
+	                productos.add(p);
+	                insert(p);
+	                
+	                }
+	                aux2++;
+	            }grid.getDataProvider().refreshAll();
+			} catch (Exception ex) {
+
+				Notification.show(ex.getMessage());
+			}
+    	});
         
         
         grid.asSingleSelect().addValueChangeListener(event ->{
@@ -324,8 +377,8 @@ public class ProductosView extends Div {
         cancel.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
         save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         delete.addThemeVariants(ButtonVariant.LUMO_ERROR);
-        read.addThemeVariants(ButtonVariant.LUMO_SUCCESS);
-        buttonLayout.add(save, cancel, delete, read);
+        
+        buttonLayout.add(save, cancel, delete, upload);
         editorLayoutDiv.add(buttonLayout);
     }
 
