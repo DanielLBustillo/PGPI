@@ -59,7 +59,7 @@ public class ShopView extends Div implements AfterNavigationObserver {
 	//Inicialización parametros conexión BBDD
 	String url = "jdbc:postgresql://localhost:5432/postgres";
     String user = "postgres";
-    String pass = " ";
+    String pass = "1234";
 	
     
 	Grid<Producto> grid = new Grid<>();
@@ -321,7 +321,7 @@ public class ShopView extends Div implements AfterNavigationObserver {
     }
         
         public void createInvoice(Producto item) {
-        	String path =  "hello.pdf";
+        	String path =  "invoice.pdf";
         	
         	try {
         			

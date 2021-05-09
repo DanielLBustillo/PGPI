@@ -1,31 +1,31 @@
-.orders-view {
+.totalorders-view {
   display: flex;
   height: 100%;
   flex-direction: column;
 }
 
-.orders-view .grid-wrapper {
+.totalorders-view .grid-wrapper {
   flex-grow: 1;
   width: 100%;
 }
 
-.orders-view .full-size {
+.totalorders-view .full-size {
   width: 100%;
   height: 100%;
 }
 
-.orders-view #editor-layout {
+.totalorders-view #editor-layout {
   width: 400px;
   display: flex;
   flex-direction: column;
 }
 
-.orders-view #editor {
+.totalorders-view #editor {
   padding: var(--lumo-space-l);
   flex-grow: 1;
 }
 
-.orders-view #button-layout {
+.totalorders-view #button-layout {
   width: 100%;
   flex-wrap: wrap;
   background-color: var(--lumo-contrast-5pct);

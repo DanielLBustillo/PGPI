@@ -24,6 +24,7 @@ import com.example.application.views.Generatepiking.GeneratepikingView;
 import com.example.application.views.MainAdmin.MainViewAdmin;
 import com.example.application.views.PikingList.PickinglistView;
 import com.example.application.views.login.LoginView;
+import com.example.application.views.order.TotalOrdersView;
 import com.example.application.views.shop.ShopView;
 import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.theme.lumo.Lumo;
@@ -93,7 +94,7 @@ public class MainViewShop extends AppLayout {
 
     private Component[] createMenuItems() {
         return new Tab[]{createTab("Login", LoginView.class), createTab("Shop", ShopView.class),
-                createTab("Generate piking", GeneratepikingView.class)};
+                createTab("Pedidos totales", TotalOrdersView.class)};
     }
 
     private static Tab createTab(String text, Class<? extends Component> navigationTarget) {
