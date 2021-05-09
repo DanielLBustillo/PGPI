@@ -67,7 +67,7 @@ public class TotalOrdersView extends Div {
 			    
 	            PreparedStatement pst;
 	        	Connection con = DriverManager.getConnection(url, user, pass);
-				pst = con.prepareStatement("SELECT * from \"NEWDDBB1\".\"Order\"");
+				pst = con.prepareStatement("SELECT * from \"NEWDDBB1\".\"Order\" o WHERE o.username = '" +  VaadinSession.getCurrent().getAttribute("user") + "'" );
 	            ResultSet rs = pst.executeQuery();
 	            
 		        while (rs.next()) {

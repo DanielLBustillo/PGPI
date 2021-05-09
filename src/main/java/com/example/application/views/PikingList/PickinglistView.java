@@ -13,6 +13,15 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.text.SimpleDateFormat;  
+import java.awt.Color;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.Font;
+import com.lowagie.text.Paragraph;
+import com.lowagie.text.pdf.PdfWriter;
 
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
@@ -61,6 +70,7 @@ public class PickinglistView extends Div implements BeforeEnterObserver {
 	private String id_storage;
 	private String idproduct;
 	private int cantidad;
+	private String addr;
     
 	@Override
 	public void beforeEnter(BeforeEnterEvent event) {
@@ -114,7 +124,6 @@ public class PickinglistView extends Div implements BeforeEnterObserver {
         grid.setDataProvider(data);
         
          
-        
         grid.addColumn(Envio::getIdOrder).setHeader("ID").setAutoWidth(true);
         grid.addColumn(Envio::getAddress).setHeader("Direccion").setAutoWidth(true);
         grid.addColumn(Envio::getState).setHeader("Estado").setAutoWidth(true);
@@ -127,13 +136,15 @@ public class PickinglistView extends Div implements BeforeEnterObserver {
         
     	done.addClickListener(e -> {
     		
-    		System.out.println("ss: "+id_storage+"\t"+cantidad);
+    		System.out.println("ss: "+id_storage+"\t"+cantidad+"\t"+idproduct);
     		System.out.println("actualizando");
     		update_picking(id_storage, cantidad);
     		System.out.println("insertando");
     		//insert_picking(idorder, idproduct, cantidad);
     		System.out.println("sasss");
     		delete_picking(id_order);
+    		
+			createAlbaran(id_order,addr);
     		grid.getDataProvider().refreshAll();
 		/**/
         
@@ -151,30 +162,44 @@ public class PickinglistView extends Div implements BeforeEnterObserver {
         	System.out.println(selected.getIdOrder());
         	
         	id_order = selected.getIdOrder();
-        	
+        	addr = selected.getAddress();
         	String storage = null;
+        	String id_product = null;
         	int cant_order = 0;
         	String id_order = null;
         	try {
 	            PreparedStatement pst;
 	        	Connection con = DriverManager.getConnection(url, user, password);
-				pst = con.prepareStatement("select a.\"idstorage\" from \"NEWDDBB1\".orderproduct a where idorder  = '"+id_order+"'");
+				pst = con.prepareStatement("select * from \"NEWDDBB1\".orderproduct a where idorder  = '"+id_order+"'");
 	            ResultSet rs = pst.executeQuery();
 		        while (rs.next()) {
-		        	storage = rs.getString(1);
+		        	storage = rs.getString("idstorage");
 		        }
 		        pst = con.prepareStatement("select a.\"quantity\" from \"NEWDDBB1\".orderproduct a where idorder  = '"+id_order+"'");
 	            ResultSet rs2 = pst.executeQuery();
 		        while (rs2.next()) {
 		        	cant_order = rs2.getInt(1);
 		        }
-		        System.out.println(storage+"\t"+cant_order);
+		        pst = con.prepareStatement("select a.\"idproduct\" from \"NEWDDBB1\".storage a where idstorage  = '"+storage+"'");
+	            ResultSet rs3 = pst.executeQuery();
+	            
+		        while (rs3.next()) {
+		        	id_product = rs3.getString(1);
+		        }
+		        
 		        
 			} catch (SQLException e1) {
 				Notification.show(e1.getMessage());
 			}
+        	
         	cantidad = cant_order;
         	id_storage = storage;
+        	idproduct = id_product;
+        	
+        	System.out.println("id product: "+idproduct);
+        	System.out.println("storage: "+storage);
+        	System.out.println("cant: "+cantidad);
+
         }); 
     }
     
@@ -295,5 +320,30 @@ public class PickinglistView extends Div implements BeforeEnterObserver {
         return id;
     }
     
+    public void createAlbaran(String order,String product) {
+        String path =  "Albaran.pdf";
+        
+        System.out.println(java.time.LocalDate.now());  
+        LocalDate date = java.time.LocalDate.now();
+        try {
+
+               Document doc = new Document();
+               PdfWriter writer = PdfWriter.getInstance(doc, new FileOutputStream(path));
+               //setting font family, color
+               Font font = new Font(Font.HELVETICA, 16, Font.BOLDITALIC, Color.RED);
+               doc.open();
+               Paragraph para = new Paragraph("\n\n Albaran de compra: \n\n\n\n ", font);
+               Paragraph compra = new Paragraph("Fecha: " + date + "\n" + "Id Pedido:" + order + "\n" +  "Direccion:" + product + "");
+               doc.add(para);
+               doc.add(compra);
+               doc.close();
+               writer.close();
+
+              } catch (DocumentException | FileNotFoundException e) {
+               // TODO Auto-generated catch block
+               e.printStackTrace();
+    }
+
+    }
     
 }
