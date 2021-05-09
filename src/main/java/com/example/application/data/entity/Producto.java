@@ -9,10 +9,11 @@ public class Producto {
     private int orderQuantity;
     private String description;
     private String providerCif;
+    private int stock;
     
 
 	public Producto(String idProduct, String name, int price, int minQuantity, int orderQuantity, String description,
-			String providerCif) {
+			String providerCif, int stock) {
 		super();
 		this.idProduct = idProduct;
 		this.name = name;
@@ -21,6 +22,7 @@ public class Producto {
 		this.orderQuantity = orderQuantity;
 		this.description = description;
 		this.providerCif = providerCif;
+		this.stock=stock;
 	}
     
     
@@ -65,6 +67,12 @@ public class Producto {
 	}
 	public void setProviderCif(String providerCif) {
 		this.providerCif = providerCif;
+	}
+	public int getStock() {
+		return stock;
+	}
+	public void setStock(int stock) {
+		this.stock = stock;
 	}
 
 }

@@ -19,6 +19,7 @@ import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.theme.Theme;
 import com.vaadin.flow.router.PageTitle;
 import com.example.application.views.MainAdmin.MainViewAdmin;
+import com.example.application.views.Users.UsersView;
 import com.example.application.views.admin.ClientesView;
 import com.example.application.views.admin.ProductosView;
 import com.example.application.views.admin.EnviosView;
@@ -27,6 +28,7 @@ import com.example.application.views.admin.ProveedoresView;
 import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.theme.lumo.Lumo;
 import com.vaadin.flow.component.dependency.CssImport; 
+import com.example.application.data.entity.Appusers;
 
 /**
  * The main view is a top-level placeholder for other views.
@@ -89,7 +91,7 @@ public class MainViewAdmin extends AppLayout {
     private Component[] createMenuItems() {
     	return new Tab[]{createTab("Productos", ProductosView.class), createTab("Clientes", ClientesView.class),
                 createTab("Pedidos", PedidosView.class), createTab("Envios", EnviosView.class),
-                createTab("Proveedores", ProveedoresView.class)};
+                createTab("Proveedores", ProveedoresView.class),createTab("Usuarios", UsersView.class)};
     }
 
     private static Tab createTab(String text, Class<? extends Component> navigationTarget) {

@@ -39,8 +39,6 @@ public class LoginView extends VerticalLayout {
     String url = "jdbc:postgresql://localhost:5432/postgres";
     String user = "postgres";
     String password = "1234";
-    
-
     String role = "";
 
     public LoginView() {

@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.notification.Notification;
 
 
@@ -26,12 +26,12 @@ public class Appusers {
 
 	public void updatePersonList() {
 		try {
-		    String url = "jdbc:postgresql://localhost:5432/PGPI";
+		    String url = "jdbc:postgresql://localhost:5432/postgres";
 		    String user = "postgres";
-		    String password = "5766";
+		    String password = "pgpi";
             PreparedStatement pst;
         	Connection con = DriverManager.getConnection(url, user, password);
-			pst = con.prepareStatement("SELECT * from \"DDBB\".appuser");
+			pst = con.prepareStatement("SELECT * from \"NEWDDBB1\".appuser");
             ResultSet rs = pst.executeQuery();
 
 	        while (rs.next()) {

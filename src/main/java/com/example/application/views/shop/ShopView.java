@@ -87,7 +87,7 @@ public class ShopView extends Div implements AfterNavigationObserver {
             ResultSet rs = pst.executeQuery();
             
 	        while (rs.next()) {
-	        	Producto producto = new Producto(rs.getString(1),rs.getString(2),rs.getInt(3),rs.getInt(4),rs.getInt(5),rs.getString(6),rs.getString(7));
+	        	Producto producto = new Producto(rs.getString(1),rs.getString(2),rs.getInt(3),rs.getInt(4),rs.getInt(5),rs.getString(6),rs.getString(7),0);
 	        	this.productos.add(producto);
 	        }
 	        
@@ -97,7 +97,7 @@ public class ShopView extends Div implements AfterNavigationObserver {
 		}
         
         
-        Producto p = new Producto("001", "Cepillo", 3,4,5,"Cepillo para pelo de mujer", "--");
+        Producto p = new Producto("001", "Cepillo", 3,4,5,"Cepillo para pelo de mujer", "--",0);
         productos.add(p); 
         
         grid.setDataProvider(data);
