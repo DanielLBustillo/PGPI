@@ -36,9 +36,9 @@ public class LoginView extends VerticalLayout {
 	private TextField pass;
     private Button sayHello;
      
-    String url = "jdbc:postgresql://localhost:5432/PGPI";
+    String url = "jdbc:postgresql://localhost:5432/postgres";
     String user = "postgres";
-    String password = "5766";
+    String password = "pgpi";
     
 
     String role = "";
@@ -58,7 +58,7 @@ public class LoginView extends VerticalLayout {
 			try {
 	            PreparedStatement pst;
 	        	Connection con = DriverManager.getConnection(url, user, password);
-				pst = con.prepareStatement("select a.\"Role\" from \"DDBB\".appuser a where a.\"iduser\"  = '"+name.getValue()+"' and a.\"Password\" = '"+pass.getValue()+"'");
+				pst = con.prepareStatement("select a.\"Role\" from \"NEWDDBB1\".appuser a where a.\"iduser\"  = '"+name.getValue()+"' and a.\"Password\" = '"+pass.getValue()+"'");
 	            ResultSet rs = pst.executeQuery();
 		        while (rs.next()) {
 		        
@@ -72,10 +72,10 @@ public class LoginView extends VerticalLayout {
 		        	VaadinSession.getCurrent().setAttribute("role", role);
 		        	
 		        	if (role.equals("ROL")) {
-		        		UI.getCurrent().navigate("Picking-list");
+		        		UI.getCurrent().navigate("pickinglist");
 			        }
 			        
-			        if (role.equals("ROL")) {
+			        if (role.equals("ROL2")) {
 			        	UI.getCurrent().navigate("shop-view");	        
 			        }
 		        	if (role.equals("ADMIN")) {	
