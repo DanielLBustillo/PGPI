@@ -48,11 +48,12 @@ import com.vaadin.flow.component.formlayout.FormLayout;
 @CssImport("./views/pickinglist/pickinglist-view.css")
 public class generateorderpicking extends Div implements BeforeEnterObserver {
 	
-    String url = "jdbc:postgresql://localhost:5432/PGPI";
+    String url = "jdbc:postgresql://localhost:5432/postgres";
     String user = "postgres";
-    String password = "5766";
+    String password = "pgpi";
     
 	private String idproduct;
+	private String idorde;
 	private int cantidad;
     
 	@Override
@@ -92,7 +93,7 @@ public class generateorderpicking extends Div implements BeforeEnterObserver {
 		    
             PreparedStatement pst;
         	Connection con = DriverManager.getConnection(url, user, password);
-			pst = con.prepareStatement("SELECT * from \"DDBB\".incomig");
+			pst = con.prepareStatement("SELECT * from \"NEWDDBB1\".incomig");
             ResultSet rs = pst.executeQuery();
             
 	        while (rs.next()) {
@@ -103,7 +104,7 @@ public class generateorderpicking extends Div implements BeforeEnterObserver {
 			e1.printStackTrace();
 			Notification.show(e1.getMessage());
 		}
-       
+        
         grid.setDataProvider(data);
         
          
@@ -124,7 +125,7 @@ public class generateorderpicking extends Div implements BeforeEnterObserver {
     		
     		
     		//String a = String.valueOf(cantidad.getValue());
-    		update(idproduct,cantidad);
+    		update(idorde,cantidad);
     		delete(idproduct);	
     		
     		grid.getDataProvider().refreshAll();
@@ -143,7 +144,7 @@ public class generateorderpicking extends Div implements BeforeEnterObserver {
         	//cantidad.setValue(String.valueOf(selected.getQuantity()));
         	System.out.println(selected.getIdProduct());
         	
-        	idproduct = selected.getIdProduct();
+        	idproduct = selected.getIdIncoming();
         	cantidad = selected.getQuantity();
         	
         	
@@ -188,7 +189,7 @@ public class generateorderpicking extends Div implements BeforeEnterObserver {
     
     public long update(String idproduct, int quantity) {
     	long id = 0;
-    	String SQL_update="UPDATE \"DDBB\".\"storage\" SET quantity = ?+quantity WHERE idproduct = ?";
+    	String SQL_update="UPDATE \"NEWDDBB1\".storage SET quantity = ?+quantity WHERE idincomig = ?";
     	
     	try (Connection conn =  DriverManager.getConnection(url, user, password);
                 PreparedStatement pstmt = conn.prepareStatement(SQL_update,
@@ -208,7 +209,7 @@ public class generateorderpicking extends Div implements BeforeEnterObserver {
     	
     }
     public int delete(String id) {
-        String SQL = "DELETE FROM \"DDBB\".\"incomig\" WHERE idproduct = ?";
+        String SQL = "DELETE FROM \"NEWDDBB1\".incomig WHERE idincomig = ?";
 
         int affectedrows = 0;
 

@@ -74,6 +74,7 @@ public class ProductosView extends Div implements BeforeEnterObserver {
 	private TextField orderQuantity;
 	private TextField description;
 	private TextField providerCif;
+	private TextField stock;
 	//private javax.swing.JTextField num1;
 
 	private Button cancel = new Button("Cancel");
@@ -82,9 +83,9 @@ public class ProductosView extends Div implements BeforeEnterObserver {
 	MemoryBuffer buffer = new MemoryBuffer();
 	Upload upload = new Upload(buffer);
 	
-	String url = "jdbc:postgresql://localhost:5432/PGPI";
+	String url = "jdbc:postgresql://localhost:5432/postgres";
     String user = "postgres";
-    String pass = "5766";
+    String pass = "pgpi";
     public static final String SAMPLE_XLSX_FILE_PATH = "Ejemplo_Proov_Ref_2021.xlsx";
 	
 	Grid<Producto> grid = new Grid<>();
@@ -108,11 +109,11 @@ public class ProductosView extends Div implements BeforeEnterObserver {
 		    
             PreparedStatement pst;
         	Connection con = DriverManager.getConnection(url, user, pass);
-			pst = con.prepareStatement("SELECT * from \"DDBB\".product");
+			pst = con.prepareStatement("SELECT * from \"NEWDDBB1\".product p LEFT JOIN \"NEWDDBB1\".newview n on n.idproduct =p.idproduct ");
             ResultSet rs = pst.executeQuery();
             
 	        while (rs.next()) {
-	        	Producto producto = new Producto(rs.getString(1),rs.getString(2),rs.getInt(3),rs.getInt(4),rs.getInt(5),rs.getString(6),rs.getString(7));
+	        	Producto producto = new Producto(rs.getString(1),rs.getString(2),rs.getInt(3),rs.getInt(4),rs.getInt(5),rs.getString(6),rs.getString(7),rs.getInt(9));
 	        	this.productos.add(producto);
 	        }
 		} catch (SQLException e1) {
@@ -129,9 +130,10 @@ public class ProductosView extends Div implements BeforeEnterObserver {
         grid.addColumn(Producto::getIdProduct).setHeader("ID").setAutoWidth(true);
         grid.addColumn(Producto::getPrice).setHeader("Precio").setAutoWidth(true);
         grid.addColumn(Producto::getMinQuantity).setHeader("Min").setAutoWidth(true);
-        grid.addColumn(Producto::getOrderQuantity).setHeader("Cantidad").setAutoWidth(true);
+        grid.addColumn(Producto::getOrderQuantity).setHeader("Cantidad a pedir").setAutoWidth(true);
         grid.addColumn(Producto::getDescription).setHeader("Descripcion").setAutoWidth(true);
         grid.addColumn(Producto::getProviderCif).setHeader("CIF").setAutoWidth(true);
+        grid.addColumn(Producto::getStock).setHeader("Stock").setAutoWidth(true);
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
         grid.setHeightFull();
         
@@ -145,6 +147,7 @@ public class ProductosView extends Div implements BeforeEnterObserver {
         	orderQuantity.clear();
         	description.clear();
         	providerCif.clear();
+        	stock.clear();
         
         });
         
@@ -156,9 +159,11 @@ public class ProductosView extends Div implements BeforeEnterObserver {
                 	Integer.parseInt(minQuantity.getValue()),
                 	Integer.parseInt(orderQuantity.getValue()),
                 	description.getValue(),
-                	providerCif.getValue());
+                	providerCif.getValue(),
+                	Integer.parseInt(stock.getValue()));
         	//num1.setText("");
         	delete(idProduct.getValue());
+        	delete2(idProduct.getValue());
         	name.clear();
         	idProduct.clear();
         	price.clear();
@@ -166,18 +171,21 @@ public class ProductosView extends Div implements BeforeEnterObserver {
         	orderQuantity.clear();
         	description.clear();
         	providerCif.clear();
+        	stock.clear();
         	
         	//Predicate<Producto> condition = employee -> employee.getName().startsWith("P");
         	
         	productos.removeIf(producto -> producto.getIdProduct()==p.getIdProduct());
             productos.add(p);
             insert(p);
+            insert2(p);
             grid.getDataProvider().refreshAll();
             
         });
         
         delete.addClickListener(e -> {
         	delete(idProduct.getValue());
+        	delete2(idProduct.getValue());
         	productos.removeIf(producto -> producto.getIdProduct()==idProduct.getValue());
         	name.clear();
         	idProduct.clear();
@@ -186,6 +194,7 @@ public class ProductosView extends Div implements BeforeEnterObserver {
         	orderQuantity.clear();
         	description.clear();
         	providerCif.clear();
+        	stock.clear();
         	
         	
         	grid.getDataProvider().refreshAll();
@@ -224,7 +233,7 @@ public class ProductosView extends Div implements BeforeEnterObserver {
 	                    	try {
     	                    	PreparedStatement pst;
     	                     	Connection con = DriverManager.getConnection(url, user, pass);
-    	             			pst = con.prepareStatement("SELECT * from \"DDBB\".provider");
+    	             			pst = con.prepareStatement("SELECT * from \"NEWDDBB1\".provider");
     	                         ResultSet rs = pst.executeQuery();
     	                         
     	             	        while (rs.next()) {
@@ -250,9 +259,10 @@ public class ProductosView extends Div implements BeforeEnterObserver {
 	                    //this.add(new TextField(cellValue));
 	                    aux++;
 	                }
-	                Producto p = new Producto (UUID.randomUUID().toString(),nameProd,0,min,0,"",nameProv);
+	                Producto p = new Producto (UUID.randomUUID().toString(),nameProd,0,min,0,"",nameProv,0);
 	                productos.add(p);
 	                insert(p);
+	                insert2(p);
 	                
 	                }
 	                aux2++;
@@ -274,6 +284,7 @@ public class ProductosView extends Div implements BeforeEnterObserver {
         	orderQuantity.setValue(String.valueOf(selected.getOrderQuantity()));
         	description.setValue(selected.getDescription());
         	providerCif.setValue(selected.getProviderCif());
+        	stock.setValue(String.valueOf(selected.getStock()));
         	
         });
         
@@ -285,7 +296,7 @@ public class ProductosView extends Div implements BeforeEnterObserver {
 
     
     public long insert(Producto value) {
-    	String SQL = "INSERT INTO \"DDBB\".product(idproduct, \"name\", price, minquantity, orderquantity, description, providercif) "
+    	String SQL = "INSERT INTO \"NEWDDBB1\".product(idproduct, \"name\", price, minquantity, orderquantity, description, providercif) "
                 + "VALUES (?,?,?,?,?,?,?)";
 
         long id = 0;
@@ -320,8 +331,60 @@ public class ProductosView extends Div implements BeforeEnterObserver {
         return id;
     }
     
+    public long insert2(Producto value) {
+    	String SQL = "UPDATE \"NEWDDBB1\".storage SET idproduct=?, quantity=? WHERE idstorage = (select min(idstorage) from \"NEWDDBB1\".storage where quantity = 0 )";
+               // + "VALUES (?,?) WHERE quantity=0";
+
+        long id = 0;
+
+        try (Connection conn =  DriverManager.getConnection(url, user, pass);
+                PreparedStatement pstmt = conn.prepareStatement(SQL,
+                Statement.RETURN_GENERATED_KEYS)) {
+
+           
+            pstmt.setString(1, value.getIdProduct());
+            //pstmt.setString(2, value.getIdProduct());
+            //pstmt.setString(3, value.getIdProduct());
+            pstmt.setInt(2, value.getStock());
+            
+
+            int affectedRows = pstmt.executeUpdate();
+            // check the affected rows 
+            if (affectedRows > 0) {
+                // get the ID back
+                try (ResultSet rs = pstmt.getGeneratedKeys()) {
+                    if (rs.next()) {
+                        id = rs.getLong(1);
+                    }
+                } catch (SQLException ex) {
+                    System.out.println(ex.getMessage());
+                }
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+        return id;
+    }
+    
     public int delete(String id) {
-        String SQL = "DELETE FROM \"DDBB\".product WHERE idproduct = ?";
+        String SQL = "DELETE FROM \"NEWDDBB1\".product WHERE idproduct = ?";
+
+        int affectedrows = 0;
+
+        try (Connection conn = DriverManager.getConnection(url, user, pass);
+                PreparedStatement pstmt = conn.prepareStatement(SQL)) {
+
+            pstmt.setString(1, id);
+
+            affectedrows = pstmt.executeUpdate();
+
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+        return affectedrows;
+    }
+    public int delete2(String id) {
+        String SQL = "UPDATE \"NEWDDBB1\".storage SET quantity=0 WHERE idproduct = ?";
 
         int affectedrows = 0;
 
@@ -357,7 +420,8 @@ public class ProductosView extends Div implements BeforeEnterObserver {
         orderQuantity = new TextField("Cantidad a pedir");
         description = new TextField("Descripcion");
         providerCif = new TextField("CIF Proveedor");
-        Component[] fields = new Component[]{name, idProduct, price, minQuantity, orderQuantity, description, providerCif};
+        stock = new TextField("Stock");
+        Component[] fields = new Component[]{name, idProduct, price, minQuantity, orderQuantity, description, providerCif, stock};
 
         for (Component field : fields) {
             ((HasStyle) field).addClassName("full-width");

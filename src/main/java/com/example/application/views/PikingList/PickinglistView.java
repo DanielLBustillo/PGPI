@@ -53,11 +53,11 @@ import com.vaadin.flow.component.formlayout.FormLayout;
 @CssImport("./views/pickinglist/pickinglist-view.css")
 public class PickinglistView extends Div implements BeforeEnterObserver {
 	
-    String url = "jdbc:postgresql://localhost:5432/PGPI";
+    String url = "jdbc:postgresql://localhost:5432/postgres";
     String user = "postgres";
-    String password = "5766";
+    String password = "pgpi";
     
-	private String idorder;
+	private String id_order;
 	private String id_storage;
 	private String idproduct;
 	private int cantidad;
@@ -99,7 +99,7 @@ public class PickinglistView extends Div implements BeforeEnterObserver {
 		    
             PreparedStatement pst;
         	Connection con = DriverManager.getConnection(url, user, password);
-			pst = con.prepareStatement("SELECT * from \"DDBB\".\"Order\"");
+			pst = con.prepareStatement("SELECT * from \"NEWDDBB1\".order");
             ResultSet rs = pst.executeQuery();
             
 	        while (rs.next()) {
@@ -133,7 +133,7 @@ public class PickinglistView extends Div implements BeforeEnterObserver {
     		System.out.println("insertando");
     		//insert_picking(idorder, idproduct, cantidad);
     		System.out.println("sasss");
-    		delete_picking(id_storage);
+    		delete_picking(id_order);
     		grid.getDataProvider().refreshAll();
 		/**/
         
@@ -150,19 +150,20 @@ public class PickinglistView extends Div implements BeforeEnterObserver {
         	//cantidad.setValue(String.valueOf(selected.getQuantity()));
         	System.out.println(selected.getIdOrder());
         	
-        	idorder = selected.getIdOrder();
+        	id_order = selected.getIdOrder();
         	
         	String storage = null;
         	int cant_order = 0;
+        	String id_order = null;
         	try {
 	            PreparedStatement pst;
 	        	Connection con = DriverManager.getConnection(url, user, password);
-				pst = con.prepareStatement("select a.\"idstorage\" from \"DDBB\".orderproduct a where a.\"idorder\"  = '"+idorder+"'");
+				pst = con.prepareStatement("select a.\"idstorage\" from \"NEWDDBB1\".orderproduct a where idorder  = '"+id_order+"'");
 	            ResultSet rs = pst.executeQuery();
 		        while (rs.next()) {
 		        	storage = rs.getString(1);
 		        }
-		        pst = con.prepareStatement("select a.\"quantity\" from \"DDBB\".orderproduct a where a.\"idorder\"  = '"+idorder+"'");
+		        pst = con.prepareStatement("select a.\"quantity\" from \"NEWDDBB1\".orderproduct a where idorder  = '"+id_order+"'");
 	            ResultSet rs2 = pst.executeQuery();
 		        while (rs2.next()) {
 		        	cant_order = rs2.getInt(1);
@@ -215,7 +216,7 @@ public class PickinglistView extends Div implements BeforeEnterObserver {
     
     public long update_picking(String idstorage, int quantity) {
     	long id = 0;
-    	String SQL_update="UPDATE \"DDBB\".\"storage\" SET quantity = quantity - ? WHERE idstorage = ?";
+    	String SQL_update="UPDATE \"NEWDDBB1\".storage SET quantity = quantity - ? WHERE idstorage = ?";
     	
     	try (Connection conn =  DriverManager.getConnection(url, user, password);
                 PreparedStatement pstmt = conn.prepareStatement(SQL_update,
@@ -234,30 +235,31 @@ public class PickinglistView extends Div implements BeforeEnterObserver {
     	return id;
     	
     }
-    public int delete_picking(String id) {
+    public int delete_picking(String idorder) {
     	System.out.println("sdf");
-        String SQL = "DELETE FROM \"DDBB\".\"orderproduct\" WHERE idorder = ?";
+        String SQL = "DELETE FROM \"NEWDDBB1\".orderproduct WHERE idorder = ?";
 
         int affectedrows = 0;
 
         try (Connection conn = DriverManager.getConnection(url, user, password);
                 PreparedStatement pstmt = conn.prepareStatement(SQL)) {
 
-            pstmt.setString(1, id);
+            pstmt.setString(1, idorder);
 
             affectedrows = pstmt.executeUpdate();
 
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
         }
-        String SQL2 = "DELETE FROM \"DDBB\".\"Order\" WHERE idorder = ?";
+        System.out.println("IDDDDDD->>>>>"+idorder);
+        String SQL2 = "DELETE FROM \"NEWDDBB1\".order WHERE idorder = ?";
 
         int affectedrows2 = 0;
 
         try (Connection conn = DriverManager.getConnection(url, user, password);
                 PreparedStatement pstmt = conn.prepareStatement(SQL2)) {
 
-            pstmt.setString(1, id);
+            pstmt.setString(1, idorder);
 
             affectedrows2 = pstmt.executeUpdate();
 
@@ -269,7 +271,7 @@ public class PickinglistView extends Div implements BeforeEnterObserver {
     
     public long insert_picking(String order, String product, int quantity) {
     	
-    	String SQL = "INSERT INTO \"DDBB\".orderhistory" + "VALUES (?,?,?,?)";
+    	String SQL = "INSERT INTO \"NEWDDBB1\".orderhistory" + "VALUES (?,?,?,?)";
     	System.out.println(java.time.LocalDate.now());
         long id = 0;
         Date d= Date.valueOf(java.time.LocalDate.now());

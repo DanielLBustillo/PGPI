@@ -25,7 +25,7 @@ public class tests {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		if (role == "ADMIN") {
+		if (role != "ADMIN") {
 		fail("singn in not successfull");
 		}
 	}
@@ -46,7 +46,7 @@ public class tests {
 	public void insert_test() {
 		try {
 		ProductosView prod = new ProductosView(); 
-				long test= prod.insert(new Producto("1","2",3,4,5,"6","7"));
+				long test= prod.insert(new Producto("1","2",3,4,5,"6","7",8));
 		
 		if(test!=0) {
 			fail("Error insertion");
@@ -56,7 +56,7 @@ public class tests {
 	
 	@Test
 	public void producto_test() {
-		Producto prod = new Producto("1","2",3,4,5,"6","7");
+		Producto prod = new Producto("1","2",3,4,5,"6","7",8);
 		prod.setName("0");
 		if(prod.getName()!="0") {
 			fail("Error change");

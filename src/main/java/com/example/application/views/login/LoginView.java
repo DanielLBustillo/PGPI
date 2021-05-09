@@ -36,9 +36,9 @@ public class LoginView extends VerticalLayout {
 	private TextField pass;
     private Button sayHello;
      
-    String url = "jdbc:postgresql://localhost:5432/PGPI";
+    String url = "jdbc:postgresql://localhost:5432/postgres";
     String user = "postgres";
-    String password = "5766";
+    String password = "pgpi";
     
 
     String role = "";
@@ -60,7 +60,7 @@ public class LoginView extends VerticalLayout {
 		        role =  check_login(name.getValue(), pass.getValue());
 	            PreparedStatement pst;
 	        	Connection con = DriverManager.getConnection(url, user, password);
-				pst = con.prepareStatement("select a.\"Role\" from \"DDBB\".Appuser a where a.\"iduser\"  = '"+name.getValue()+"' and a.\"Password\" = '"+pass.getValue()+"'");
+				pst = con.prepareStatement("select a.\"Role\" from \"NEWDDBB1\".Appuser a where a.\"iduser\"  = '"+name.getValue()+"' and a.\"Password\" = '"+pass.getValue()+"'");
 	            ResultSet rs = pst.executeQuery();
 		        while (rs.next()) {
 		        
@@ -93,7 +93,7 @@ public class LoginView extends VerticalLayout {
     	String rol ="";
     	PreparedStatement pst;
     	Connection con = DriverManager.getConnection(url, user, password);
-		pst = con.prepareStatement("select a.\"Role\" from \"DDBB\".appuser a where a.\"iduser\"  = '"+ n +"' and a.\"Password\" = '"+ p +"'");
+		pst = con.prepareStatement("select a.\"Role\" from \"NEWDDBB1\".appuser a where a.\"iduser\"  = '"+ n +"' and a.\"Password\" = '"+ p +"'");
         ResultSet rs = pst.executeQuery();
         while (rs.next()) {
         
