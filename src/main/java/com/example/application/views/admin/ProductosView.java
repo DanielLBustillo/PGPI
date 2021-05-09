@@ -82,9 +82,9 @@ public class ProductosView extends Div implements BeforeEnterObserver {
 	MemoryBuffer buffer = new MemoryBuffer();
 	Upload upload = new Upload(buffer);
 	
-	String url = "jdbc:postgresql://localhost:5432/postgres";
+	String url = "jdbc:postgresql://localhost:5432/PGPI";
     String user = "postgres";
-    String pass = "pgpi";
+    String pass = "5766";
     public static final String SAMPLE_XLSX_FILE_PATH = "Ejemplo_Proov_Ref_2021.xlsx";
 	
 	Grid<Producto> grid = new Grid<>();
@@ -108,7 +108,7 @@ public class ProductosView extends Div implements BeforeEnterObserver {
 		    
             PreparedStatement pst;
         	Connection con = DriverManager.getConnection(url, user, pass);
-			pst = con.prepareStatement("SELECT * from \"NEWDDBB1\".product");
+			pst = con.prepareStatement("SELECT * from \"DDBB\".product");
             ResultSet rs = pst.executeQuery();
             
 	        while (rs.next()) {
@@ -224,7 +224,7 @@ public class ProductosView extends Div implements BeforeEnterObserver {
 	                    	try {
     	                    	PreparedStatement pst;
     	                     	Connection con = DriverManager.getConnection(url, user, pass);
-    	             			pst = con.prepareStatement("SELECT * from \"NEWDDBB1\".provider");
+    	             			pst = con.prepareStatement("SELECT * from \"DDBB\".provider");
     	                         ResultSet rs = pst.executeQuery();
     	                         
     	             	        while (rs.next()) {
@@ -285,7 +285,7 @@ public class ProductosView extends Div implements BeforeEnterObserver {
 
     
     public long insert(Producto value) {
-    	String SQL = "INSERT INTO \"NEWDDBB1\".product(idproduct, \"name\", price, minquantity, orderquantity, description, providercif) "
+    	String SQL = "INSERT INTO \"DDBB\".product(idproduct, \"name\", price, minquantity, orderquantity, description, providercif) "
                 + "VALUES (?,?,?,?,?,?,?)";
 
         long id = 0;
@@ -321,7 +321,7 @@ public class ProductosView extends Div implements BeforeEnterObserver {
     }
     
     public int delete(String id) {
-        String SQL = "DELETE FROM \"NEWDDBB1\".product WHERE idproduct = ?";
+        String SQL = "DELETE FROM \"DDBB\".product WHERE idproduct = ?";
 
         int affectedrows = 0;
 

@@ -7,9 +7,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -33,7 +30,6 @@ import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.router.PageTitle;
-import com.example.application.data.entity.Cliente;
 import com.example.application.data.entity.Envio;
 import com.example.application.data.entity.Pedido;
 import com.example.application.views.Generatepiking.Person;
@@ -41,24 +37,21 @@ import com.example.application.views.MainAdmin.MainViewAdmin;
 import com.example.application.views.login.LoginView;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasStyle;
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.formlayout.FormLayout;
 
-@Route(value = "Salientes", layout = pivkingview.class)
-@PageTitle("Salientes")
+@Route(value = "Entrantes", layout = pivkingview.class)
+@PageTitle("Entrantes")
 @CssImport("./views/pickinglist/pickinglist-view.css")
-public class PickinglistView extends Div implements BeforeEnterObserver {
+public class generateorderpicking extends Div implements BeforeEnterObserver {
 	
     String url = "jdbc:postgresql://localhost:5432/PGPI";
     String user = "postgres";
     String password = "5766";
     
-	private String idorder;
-	private String id_storage;
 	private String idproduct;
 	private int cantidad;
     
@@ -79,12 +72,12 @@ public class PickinglistView extends Div implements BeforeEnterObserver {
 	
 
 	
-	Grid<Envio> grid = new Grid<>();
-	List<Envio> pedidos = new ArrayList<>();
-	ListDataProvider<Envio> data = new ListDataProvider<>(pedidos);
+	Grid<Pedido> grid = new Grid<>();
+	List<Pedido> pedidos = new ArrayList<>();
+	ListDataProvider<Pedido> data = new ListDataProvider<>(pedidos);
     
-    public PickinglistView() {
-    	setId("pickinglist-view");
+    public generateorderpicking() {
+    	setId("pickinglist-view"); 
         addClassName("pickinglist-view");
         
         SplitLayout splitLayout = new SplitLayout();
@@ -99,11 +92,11 @@ public class PickinglistView extends Div implements BeforeEnterObserver {
 		    
             PreparedStatement pst;
         	Connection con = DriverManager.getConnection(url, user, password);
-			pst = con.prepareStatement("SELECT * from \"DDBB\".\"Order\"");
+			pst = con.prepareStatement("SELECT * from \"DDBB\".incomig");
             ResultSet rs = pst.executeQuery();
             
 	        while (rs.next()) {
-	        	Envio pedido = new Envio(rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4),rs.getInt(5),rs.getString(6));
+	        	Pedido pedido = new Pedido(rs.getString(1),rs.getString(2),rs.getString(3),rs.getInt(4),rs.getDate(5).toLocalDate(),rs.getDate(6).toLocalDate(),rs.getString(7));
 	        	this.pedidos.add(pedido);
 	        }
 		} catch (SQLException e1) {
@@ -115,25 +108,25 @@ public class PickinglistView extends Div implements BeforeEnterObserver {
         
          
         
-        grid.addColumn(Envio::getIdOrder).setHeader("ID").setAutoWidth(true);
-        grid.addColumn(Envio::getAddress).setHeader("Direccion").setAutoWidth(true);
-        grid.addColumn(Envio::getState).setHeader("Estado").setAutoWidth(true);
-        grid.addColumn(Envio::getTrackingNumber).setHeader("Num tracking").setAutoWidth(true);
-        grid.addColumn(Envio::getUsername).setHeader("User").setAutoWidth(true);
-        grid.addColumn(Envio::getPrice).setHeader("Precio").setAutoWidth(true);
+        grid.addColumn(Pedido::getIdIncoming).setHeader("ID").setAutoWidth(true);
+        grid.addColumn(Pedido::getPackageInfo).setHeader("Info").setAutoWidth(true);
+        grid.addColumn(Pedido::getIdProduct).setHeader("ID Producto").setAutoWidth(true);
+        grid.addColumn(Pedido::getQuantity).setHeader("Cantidad").setAutoWidth(true);
+        grid.addColumn(Pedido::getDateOrder).setHeader("Fecha Pedido").setAutoWidth(true);
+        grid.addColumn(Pedido::getDateReceive).setHeader("Fecha Recibido").setAutoWidth(true);
+        grid.addColumn(Pedido::getProviderCif).setHeader("CIF").setAutoWidth(true);
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
         grid.setHeightFull();
         
         
     	done.addClickListener(e -> {
     		
-    		System.out.println("ss: "+id_storage+"\t"+cantidad);
-    		System.out.println("actualizando");
-    		update_picking(id_storage, cantidad);
-    		System.out.println("insertando");
-    		//insert_picking(idorder, idproduct, cantidad);
-    		System.out.println("sasss");
-    		delete_picking(id_storage);
+    		
+    		
+    		//String a = String.valueOf(cantidad.getValue());
+    		update(idproduct,cantidad);
+    		delete(idproduct);	
+    		
     		grid.getDataProvider().refreshAll();
 		/**/
         
@@ -144,36 +137,16 @@ public class PickinglistView extends Div implements BeforeEnterObserver {
         
         grid.asSingleSelect().addValueChangeListener(event ->{
         	
-        	Envio selected =  event.getValue();
+        	Pedido selected =  event.getValue();
         	
         	//idproduct.setValue(selected.getIdProduct());
         	//cantidad.setValue(String.valueOf(selected.getQuantity()));
-        	System.out.println(selected.getIdOrder());
+        	System.out.println(selected.getIdProduct());
         	
-        	idorder = selected.getIdOrder();
+        	idproduct = selected.getIdProduct();
+        	cantidad = selected.getQuantity();
         	
-        	String storage = null;
-        	int cant_order = 0;
-        	try {
-	            PreparedStatement pst;
-	        	Connection con = DriverManager.getConnection(url, user, password);
-				pst = con.prepareStatement("select a.\"idstorage\" from \"DDBB\".orderproduct a where a.\"idorder\"  = '"+idorder+"'");
-	            ResultSet rs = pst.executeQuery();
-		        while (rs.next()) {
-		        	storage = rs.getString(1);
-		        }
-		        pst = con.prepareStatement("select a.\"quantity\" from \"DDBB\".orderproduct a where a.\"idorder\"  = '"+idorder+"'");
-	            ResultSet rs2 = pst.executeQuery();
-		        while (rs2.next()) {
-		        	cant_order = rs2.getInt(1);
-		        }
-		        System.out.println(storage+"\t"+cant_order);
-		        
-			} catch (SQLException e1) {
-				Notification.show(e1.getMessage());
-			}
-        	cantidad = cant_order;
-        	id_storage = storage;
+        	
         }); 
     }
     
@@ -213,16 +186,16 @@ public class PickinglistView extends Div implements BeforeEnterObserver {
         wrapper.add(grid);
     }
     
-    public long update_picking(String idstorage, int quantity) {
+    public long update(String idproduct, int quantity) {
     	long id = 0;
-    	String SQL_update="UPDATE \"DDBB\".\"storage\" SET quantity = quantity - ? WHERE idstorage = ?";
+    	String SQL_update="UPDATE \"DDBB\".\"storage\" SET quantity = ?+quantity WHERE idproduct = ?";
     	
     	try (Connection conn =  DriverManager.getConnection(url, user, password);
                 PreparedStatement pstmt = conn.prepareStatement(SQL_update,
                 Statement.RETURN_GENERATED_KEYS)) {
     		
     		pstmt.setInt(1, quantity);
-            pstmt.setString(2, idstorage);
+            pstmt.setString(2, idproduct);
             
 
             pstmt.executeUpdate();
@@ -234,9 +207,8 @@ public class PickinglistView extends Div implements BeforeEnterObserver {
     	return id;
     	
     }
-    public int delete_picking(String id) {
-    	System.out.println("sdf");
-        String SQL = "DELETE FROM \"DDBB\".\"orderproduct\" WHERE idorder = ?";
+    public int delete(String id) {
+        String SQL = "DELETE FROM \"DDBB\".\"incomig\" WHERE idproduct = ?";
 
         int affectedrows = 0;
 
@@ -250,48 +222,7 @@ public class PickinglistView extends Div implements BeforeEnterObserver {
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
         }
-        String SQL2 = "DELETE FROM \"DDBB\".\"Order\" WHERE idorder = ?";
-
-        int affectedrows2 = 0;
-
-        try (Connection conn = DriverManager.getConnection(url, user, password);
-                PreparedStatement pstmt = conn.prepareStatement(SQL2)) {
-
-            pstmt.setString(1, id);
-
-            affectedrows2 = pstmt.executeUpdate();
-
-        } catch (SQLException ex) {
-            System.out.println(ex.getMessage());
-        }
         return affectedrows;
     }
-    
-    public long insert_picking(String order, String product, int quantity) {
-    	
-    	String SQL = "INSERT INTO \"DDBB\".orderhistory" + "VALUES (?,?,?,?)";
-    	System.out.println(java.time.LocalDate.now());
-        long id = 0;
-        Date d= Date.valueOf(java.time.LocalDate.now());
-		//Date.valueOf(d);
-        try (Connection conn =  DriverManager.getConnection(url, user, password);
-                PreparedStatement pstmt = conn.prepareStatement(SQL,
-                Statement.RETURN_GENERATED_KEYS)) {
-    		
-            pstmt.setString(1, order);
-            pstmt.setString(2, product);
-            pstmt.setInt(3, quantity);
-            pstmt.setDate(4, d);
-            
-            int affectedRows = pstmt.executeUpdate();
-            // check the affected rows 
-            
-        } catch (SQLException ex) {
-            System.out.println(ex.getMessage());
-        }
-        System.out.println("wss");
-        return id;
-    }
-    
-    
+
 }

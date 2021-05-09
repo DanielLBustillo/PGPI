@@ -58,6 +58,15 @@ public class LoginView extends VerticalLayout {
 
 			try {
 		        role =  check_login(name.getValue(), pass.getValue());
+	            PreparedStatement pst;
+	        	Connection con = DriverManager.getConnection(url, user, password);
+				pst = con.prepareStatement("select a.\"Role\" from \"DDBB\".Appuser a where a.\"iduser\"  = '"+name.getValue()+"' and a.\"Password\" = '"+pass.getValue()+"'");
+	            ResultSet rs = pst.executeQuery();
+		        while (rs.next()) {
+		        
+		        	role = rs.getString(1);
+		        }
+		        
 		        if (role == "") {
 					Notification.show("CREDENCIALES INCORRECTOS");
 		        }else {
@@ -65,11 +74,11 @@ public class LoginView extends VerticalLayout {
 		        	VaadinSession.getCurrent().setAttribute("role", role);
 		        	
 		        	if (role.equals("ROL")) {
-		        		UI.getCurrent().navigate("Picking-list");
+		        		UI.getCurrent().navigate("Salientes");
 			        }
 			        
-			        if (role.equals("ROL")) {
-			        	UI.getCurrent().navigate("shop-view");	        
+			        if (role.equals("ROL2")) {
+			        	UI.getCurrent().navigate("Shop");	        
 			        }
 		        	if (role.equals("ADMIN")) {	
 		        		UI.getCurrent().navigate("Appusers");
